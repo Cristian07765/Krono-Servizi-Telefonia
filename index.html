@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Centralino Studio Multiservizi</title>
+<style>
+:root{--blue:#214f79;--gold:#c49a54;--bg:#f3f6f9;--ink:#203247}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,Arial;color:var(--ink)}header{background:var(--blue);color:white;padding:25px max(20px,calc((100% - 1000px)/2))}header small{letter-spacing:2px;color:#d7e6f2}h1{margin:5px 0;font-size:25px}.wrap{max-width:1000px;margin:25px auto;padding:0 16px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.tab,button{border:0;border-radius:9px;padding:11px 15px;font-weight:700;cursor:pointer}.tab{background:#e3eaf0;color:#31506b}.tab.active,button.primary{background:var(--blue);color:white}.card{background:white;border:1px solid #e0e7ed;border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 5px 18px #2032470a}.muted{color:#718096;font-size:13px;line-height:1.5}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.service{border:1px solid #e2e9ef;border-radius:12px;padding:16px}.key{font-size:28px;font-weight:800;color:var(--gold)}label{display:block;font-size:12px;font-weight:700;margin:12px 0 5px}input{width:100%;padding:11px;border:1px solid #d7e0e8;border-radius:8px;font:inherit}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row input{flex:1;min-width:170px}.status{padding:10px;border-radius:9px;background:#f1f5f8;font-size:13px;margin-top:12px}.status.ok{background:#e9f7ef;color:#236744}.status.err{background:#fff1ed;color:#9b3e2b}.hidden{display:none}.big{font-size:21px;font-weight:800}.callbtn{width:100%;margin-top:12px;padding:15px;font-size:16px}.danger{background:#a43d36;color:white}.gold{color:var(--gold)}footer{text-align:center;color:#8493a1;font-size:12px;padding:20px}
+</style>
+</head><body>
+<header><small>STUDIO MULTISERVIZI</small><h1>Centralino online</h1><div>Assistenza e pronto intervento</div></header>
+<div class="wrap">
+<section id="cliente" class="card">
+<h2>Come possiamo aiutarti?</h2><p class="muted">Scegli il servizio: il centralino avvierà una telefonata verso il numero associato. I numeri qui inseriti sono provvisori e puoi modificarli nel codice.</p>
+<div class="grid">
+<div class="service"><div class="key">1</div><b>Interventi idraulici</b><button class="primary callbtn" data-service="1">Chiama idraulico</button></div>
+<div class="service"><div class="key">2</div><b>Interventi elettrici</b><button class="primary callbtn" data-service="2">Chiama elettricista</button></div>
+<div class="service"><div class="key">3</div><b>Opere murarie</b><button class="primary callbtn" data-service="3">Chiama muratore</button></div>
+</div>
+<div id="clientStatus" class="status">Seleziona un servizio per iniziare.</div>
+<button id="hangupClient" class="danger hidden">Termina chiamata</button>
+</section>
+<section class="card">
+<h3>Informazioni importanti</h3><p class="muted">Le chiamate vengono avviate tramite il servizio telefonico del dispositivo. I numeri provvisori sono definiti nella costante SERVICE_NUMBERS all’interno del codice e possono essere sostituiti. Non usare per emergenze: in caso di pericolo chiamare il 112.</p>
+</section>
+<footer>Studio Multiservizi · Centralino via Internet</footer>
+</div>
+<script>
+// NUMERI TELEFONICI STATICI: sostituisci questi valori con i numeri reali.
+const SERVICE_NUMBERS = {
+  '1': '+390963123456', // Idraulico
+  '2': '+390963234567', // Elettricista
+  '3': '+390963345678'  // Opere murarie
+};
+
+const $ = id => document.getElementById(id);
+function status(id, msg, type='') {
+  $(id).textContent = msg;
+  $(id).className = 'status ' + type;
+}
+
+document.querySelectorAll('[data-service]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const service = btn.dataset.service;
+    const number = SERVICE_NUMBERS[service];
+    const names = {'1':'idraulico', '2':'elettricista', '3':'muratore'};
+    if (!number) {
+      status('clientStatus', 'Numero non configurato per questo servizio.', 'err');
+      return;
+    }
+    status('clientStatus', 'Apertura del telefono per chiamare ' + names[service] + ' (' + number + ')…', 'ok');
+    window.location.href = 'tel:' + number;
+  });
+});
+</script></body></html>
